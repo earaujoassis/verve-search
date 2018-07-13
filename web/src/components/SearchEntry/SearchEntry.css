@@ -1,0 +1,30 @@
+.searchEntryContainer {
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  margin: 2rem 0;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #ccc;
+}
+
+.searchEntryImg {
+  flex: 1;
+}
+
+.searchEntryName {
+  margin-bottom: 1rem;
+}
+
+.searchEntryInfo {
+  display: flex;
+  flex: 5;
+  flex-direction: column;
+}
+
+.searchEntryInfo p {
+  margin: 0 0 0.5rem;
+}
+
+.searchEntryTxt {
+  font-style: italic;
+}

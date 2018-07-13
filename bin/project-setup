@@ -1,0 +1,2 @@
+bundle install
+cd web && yarn install && cd ..
