@@ -2,6 +2,7 @@ require 'net/http'
 require 'uri'
 require 'json'
 require 'date'
+require 'bigdecimal'
 
 class VerveSearchService
   class << self
@@ -16,7 +17,7 @@ class VerveSearchService
 
   def attempt_entries_update
     lastupdate = DateTime.now
-    lastupdated_entry = Entry.desc(:last_update).limit(1).first
+    lastupdated_entry = Entry.order_by(last_update: :desc).limit(1).first
     unless lastupdated_entry.nil?
       elapsed_minutes = ((lastupdate - lastupdated_entry.last_update) * 60 * 60).to_i
       return if elapsed_minutes < 15
@@ -30,10 +31,17 @@ class VerveSearchService
 
     if external_entries.length > 0
       external_entries.each do |external_entry|
+        external_entry.symbolize_keys!
         internal_entry = external_entry
-          .symbolize_keys!
-          .slice(:name, :producer, :price_in_usd, :region, :country, :location, :appellation, :vintage, :bottle_size, :quantity, :link, :image_url)
-          .merge(external_id: external_entry[:id], last_update: lastupdate)
+          .slice(
+            :name, :producer, :region, :country, :location,
+            :appellation, :vintage, :bottle_size, :quantity, :link, :image_url
+          )
+          .merge(
+            price_in_usd: BigDecimal(external_entry[:price_in_usd]),
+            external_id: external_entry[:id],
+            last_update: lastupdate
+          )
         entry = Entry.where(external_id: external_entry[:id]).first
         if entry.nil?
           Entry.create(internal_entry)

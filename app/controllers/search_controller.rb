@@ -7,18 +7,20 @@ class SearchController < ApplicationController
 
     if query
       criteria = Entry
-        .any_of({name: /.*#{query}.*/i})
-        .any_of({ region: /.*#{query}.*/i })
+        .any_of(name: /.*#{query}.*/i)
+        .any_of(region: /.*#{query}.*/i)
     else
       criteria = Entry.all
     end
 
     if order
-      puts order.inspect
-      criteria = criteria.desc(:name) if order['name'] = 'desc'
-      criteria = criteria.asc(:name) if order['name'] = 'asc'
-      criteria = criteria.desc(:price) if order['price'] = 'desc'
-      criteria = criteria.asc(:price) if order['price'] = 'asc'
+      if order['price'] == 'desc' || order['price'] == 'asc'
+        criteria = criteria.order_by(price: order['price'])
+      end
+
+      if order['name'] == 'desc' || order['name'] == 'asc'
+        criteria = criteria.order_by(name: order['name'])
+      end
     end
 
     render json: criteria.limit(limit)

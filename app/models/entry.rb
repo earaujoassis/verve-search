@@ -1,4 +1,5 @@
 require 'date'
+require 'bigdecimal'
 
 class Entry
   include Mongoid::Document
@@ -7,7 +8,7 @@ class Entry
   field :external_id, type: Integer
   field :name, type: String
   field :producer, type: String
-  field :price_in_usd, type: String
+  field :price_in_usd, type: BigDecimal
   field :region, type: String
   field :country, type: String
   field :location, type: String

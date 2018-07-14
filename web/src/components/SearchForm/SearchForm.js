@@ -42,27 +42,22 @@ class SearchForm extends React.Component {
 
   handleInputChange(event) {
     event.preventDefault();
-    this.triggerSearch(event.target.value);
+    this.setState({ query: event.target.value });
+    this.triggerSearch(event.target.value, this.state.order);
   }
 
-  triggerSearch(query) {
+  triggerSearch(query, order) {
     let queryString;
-
-    this.setState({ query });
 
     if (query.length > 3) {
       queryString = `query=${query}`;
 
-      if (this.state.order.price !== 'none') {
-        queryString += `&order[price]=${
-          normalizeOrdering[this.state.order.price]
-        }`;
+      if (order.price !== 'none') {
+        queryString += `&order[price]=${normalizeOrdering[order.price]}`;
       }
 
-      if (this.state.order.name !== 'none') {
-        queryString += `&order[name]=${
-          normalizeOrdering[this.state.order.name]
-        }`;
+      if (order.name !== 'none') {
+        queryString += `&order[name]=${normalizeOrdering[order.name]}`;
       }
 
       this.props.onTriggerSearch(queryString);
@@ -104,13 +99,12 @@ class SearchForm extends React.Component {
           <span
             className={s.searchOrdering}
             onClick={() => {
-              this.setState({
-                order: {
-                  name: orderingStateMachine[this.state.order.name],
-                  price: this.state.order.price,
-                },
-              });
-              this.triggerSearch(this.state.query);
+              const order = {
+                name: orderingStateMachine[this.state.order.name],
+                price: this.state.order.price,
+              };
+              this.setState({ order });
+              this.triggerSearch(this.state.query, order);
             }}
           >
             by Name
@@ -120,13 +114,12 @@ class SearchForm extends React.Component {
           <span
             className={s.searchOrdering}
             onClick={() => {
-              this.setState({
-                order: {
-                  price: orderingStateMachine[this.state.order.price],
-                  name: this.state.order.name,
-                },
-              });
-              this.triggerSearch(this.state.query);
+              const order = {
+                price: orderingStateMachine[this.state.order.price],
+                name: this.state.order.name,
+              };
+              this.setState({ order });
+              this.triggerSearch(this.state.query, order);
             }}
           >
             by Price
