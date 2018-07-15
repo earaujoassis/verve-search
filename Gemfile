@@ -31,6 +31,7 @@ gem 'jbuilder', '~> 2.5'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.1.0', require: false
 
+gem 'rufus-scheduler'
 gem 'rack-cors'
 gem 'mongoid', '~> 6.0'
 gem 'bson_ext'

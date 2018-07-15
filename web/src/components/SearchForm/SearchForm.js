@@ -53,7 +53,7 @@ class SearchForm extends React.Component {
       queryString = `query=${query}`;
 
       if (order.price !== 'none') {
-        queryString += `&order[price]=${normalizeOrdering[order.price]}`;
+        queryString += `&order[price_in_usd]=${normalizeOrdering[order.price]}`;
       }
 
       if (order.name !== 'none') {

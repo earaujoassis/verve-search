@@ -1,6 +1,5 @@
 class SearchController < ApplicationController
   def index
-    VerveSearchService.new.attempt_entries_update
     limit = params[:limit] || 10
     query = params[:query]
     order = params[:order]
@@ -14,8 +13,8 @@ class SearchController < ApplicationController
     end
 
     if order
-      if order['price'] == 'desc' || order['price'] == 'asc'
-        criteria = criteria.order_by(price: order['price'])
+      if order['price_in_usd'] == 'desc' || order['price_in_usd'] == 'asc'
+        criteria = criteria.order_by(price_in_usd: order['price_in_usd'])
       end
 
       if order['name'] == 'desc' || order['name'] == 'asc'
@@ -23,6 +22,6 @@ class SearchController < ApplicationController
       end
     end
 
-    render json: criteria.limit(limit)
+    render json: criteria.limit(limit).collation(locale: 'en_US', numericOrdering: true)
   end
 end

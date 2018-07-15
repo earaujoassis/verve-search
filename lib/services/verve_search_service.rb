@@ -13,9 +13,13 @@ class VerveSearchService
     def verve_search_uri
       @verve_search_uri || ''
     end
+
+    def attempt_entries_update
+      self.new.fetch_and_update_entries
+    end
   end
 
-  def attempt_entries_update
+  def fetch_and_update_entries
     lastupdate = DateTime.now
     lastupdated_entry = Entry.order_by(last_update: :desc).limit(1).first
     unless lastupdated_entry.nil?
@@ -34,11 +38,10 @@ class VerveSearchService
         external_entry.symbolize_keys!
         internal_entry = external_entry
           .slice(
-            :name, :producer, :region, :country, :location,
+            :name, :price_in_usd, :producer, :region, :country, :location,
             :appellation, :vintage, :bottle_size, :quantity, :link, :image_url
           )
           .merge(
-            price_in_usd: BigDecimal(external_entry[:price_in_usd]),
             external_id: external_entry[:id],
             last_update: lastupdate
           )
@@ -68,12 +71,10 @@ class VerveSearchService
   private
 
   def remote_connection
-    @_remote_address ||= begin
-      uri = URI.parse(self.class.verve_search_uri)
-      http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = true
-      http
-    end
+    uri = URI.parse(self.class.verve_search_uri)
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+    http
   end
 
   def parse_body(body)
